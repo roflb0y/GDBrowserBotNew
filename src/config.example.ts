@@ -1,0 +1,1 @@
+export const BOT_TOKEN = "your bot token goes here";
