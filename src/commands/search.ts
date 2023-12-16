@@ -6,12 +6,12 @@ import { Message } from "telegraf/typings/core/types/typegram";
 
 bot.command("search", async ctx => {
     ctx.reply(`Loading...`)
-    .then(msg => sendPage(ctx.from.id, msg.message_id, 0));
+    .then(msg => sendPage(ctx.from.id, msg.message_id, 0, SearchType.Recent));
 });
 
-export async function sendPage(chatId: number, messageIdToEdit: number, page: number): Promise<void> {
-    const levels = await searchLevels("", page, SearchType.MostLiked);
-    const inlineButtons = levelsMarkupBuilder(levels, page);
+export async function sendPage(chatId: number, messageIdToEdit: number, page: number, searchType: number): Promise<void> {
+    const levels = await searchLevels("", page, searchType);
+    const inlineButtons = levelsMarkupBuilder(levels, page, searchType);
 
-    await bot.telegram.editMessageText(chatId, messageIdToEdit, undefined, SearchType[2], { reply_markup: inlineButtons.reply_markup });
+    await bot.telegram.editMessageText(chatId, messageIdToEdit, undefined, `type:${SearchType[searchType]}`, { reply_markup: inlineButtons.reply_markup });
 }
