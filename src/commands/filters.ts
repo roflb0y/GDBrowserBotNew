@@ -1,11 +1,11 @@
 import { bot } from "../bot";
 import * as db from "../database/database";
-import { settingsKeyboard } from "../markups/searchSettings";
+import { settingsKeyboard } from "../markups/searchFilters";
 import * as log from "../util/logger";
 
-log.info("/settings command initialized");
+log.info("/filters command initialized");
 
-bot.command("settings", async ctx => {
+bot.command("filters", async ctx => {
     db.getUser(ctx.from.id)
     .then(async user => {
         if (!user) {
@@ -14,6 +14,6 @@ bot.command("settings", async ctx => {
         }
 
         const keyboard = settingsKeyboard(user.search_settings);
-        ctx.reply("Search settings", keyboard);
+        ctx.reply("Search filters", keyboard);
     })
 })

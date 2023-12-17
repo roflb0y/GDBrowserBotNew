@@ -1,3 +1,3 @@
 import "./start";
 import "./search";
-import "./settings";
+import "./filters";

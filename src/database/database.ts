@@ -1,7 +1,8 @@
 import { MUser } from "./schemas";
 import { User } from "telegraf/typings/core/types/typegram";
-import { DBUser, SearchSettings } from "./interface";
+import { DBUser } from "./interface";
 import * as log from "../util/logger";
+import { toggleArrayValue } from "../util/utils";
 
 function defaultUser(user: any): DBUser {
     return {
@@ -34,9 +35,20 @@ export async function getUser(userId: number): Promise<DBUser | undefined> {
 }
 
 export async function setSetting(userId: number, setting: string, value: number): Promise<DBUser | undefined> {
-    const user = await MUser.findOneAndUpdate({ user_id: userId }, { [`search_settings.${setting}`]: value }, { returnDocument: "after" });
+    const user = await getUser(userId);
+    if (!user) return;
 
-    if (!user) return undefined;
-    log.db(`${userId} updated settings - ${setting} = ${value}`)
-    return defaultUser(user);
+    let newSetting;
+
+    if (setting === "levelDifficulty" || setting === "levelLength") {
+        const settingToUpdate = user.search_settings[setting];
+        newSetting = toggleArrayValue(settingToUpdate, value, true);
+    } else {
+        newSetting = value;
+    }
+    const updatedSettingsUser = await MUser.findOneAndUpdate({ user_id: userId }, { [`search_settings.${setting}`]: newSetting }, { returnDocument: "after" });
+
+    if (!updatedSettingsUser) return undefined;
+    log.db(`${userId} updated settings - ${setting} = ${newSetting}`);
+    return defaultUser(updatedSettingsUser);
 }

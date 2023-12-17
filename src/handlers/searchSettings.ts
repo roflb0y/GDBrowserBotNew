@@ -2,7 +2,7 @@ import { bot } from "../bot";
 import { getUser } from "../database/database";
 import { callbackQuery } from "telegraf/filters";
 import { setSetting } from "../database/database";
-import { settingsKeyboard } from "../markups/searchSettings";
+import { settingsKeyboard } from "../markups/searchFilters";
 import * as log from "../util/logger";
 
 log.info("searchSettings.ts handler initialized");

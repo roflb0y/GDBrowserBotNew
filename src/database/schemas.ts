@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { SearchFiltersDefault } from "./interface";
 
 const users = new mongoose.Schema({
     user_id: {
@@ -22,7 +23,10 @@ const users = new mongoose.Schema({
     },
 
     search_settings: {
-        searchType: { type: Number, default: 2 }
+        searchType: { type: Number, default: SearchFiltersDefault.searchType },
+        levelDifficulty: { type: Array<Number>, default: SearchFiltersDefault.levelDifficulty },
+        demonFilter: { type: Number, default: SearchFiltersDefault.demonFilter },
+        levelLength: { type: Array<Number>, default: SearchFiltersDefault.levelLength }
     }
 })
 

@@ -3,9 +3,19 @@ export interface DBUser {
     username: string,
     language_code: string,
     joined_at: Date,
-    search_settings: SearchSettings
+    search_settings: SearchFilters
 }
 
-export interface SearchSettings {
-    searchType: number
+export interface SearchFilters {
+    searchType: number,
+    levelDifficulty: Array<Number>,
+    demonFilter: number,
+    levelLength: Array<Number>,
+}
+
+export const SearchFiltersDefault: SearchFilters = { 
+    searchType: 2,
+    levelDifficulty: [],
+    demonFilter: 3,
+    levelLength: []
 }
