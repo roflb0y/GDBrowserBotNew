@@ -64,7 +64,6 @@ export function parseLevels(levels: string, creators: string, splitter: string =
 
 export function dumpSearchFilters(searchFilters: SearchFilters): string {
     let params: string[] = [];
-    console.log(searchFilters);
 
     //params.push(`type=${searchFilters.searchType}`);
     if (searchFilters.levelDifficulty[0] === -2) params.push(`demonFilter=${searchFilters.demonFilter}`);
@@ -93,9 +92,8 @@ export function parseSearchFilters(data: string): SearchFilters {
         
     })
 
-    if (!filters.diff) filters.diff = [-2];
+    if (!filters.diff && filters.demonFilter) filters.diff = [-2];
 
-    console.log("parsed filters " + JSON.stringify(filters));
     if(filters.diff) res.levelDifficulty = filters.diff as Number[];
     if(filters.demonFilter) res.demonFilter = Number(filters.demonFilter);
     if(filters.len) res.levelLength = filters.len as Number[];

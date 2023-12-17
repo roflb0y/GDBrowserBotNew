@@ -43,6 +43,7 @@ export async function setFilter(userId: number, filter: string, value: number): 
     if (filter === "levelDifficulty" || filter === "levelLength") {
         const filterToUpdate = user.search_filters[filter];
         newFilter = toggleArrayValue(filterToUpdate, value, true);
+        if (newFilter.includes(-2)) newFilter = [newFilter[0]];
     } else {
         newFilter = value;
     }

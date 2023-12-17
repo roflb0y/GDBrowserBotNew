@@ -4,3 +4,4 @@
 package-lock.json
 
 /src/config.ts
+/src/sendMessage.ts

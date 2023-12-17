@@ -30,5 +30,6 @@ export async function sendPage(userId: number, searchFilters: SearchFilters, mes
     const path = dumpSearchFilters(searchFilters);
     //console.log(path);
 
-    await bot.telegram.editMessageText(userId, messageIdToEdit, undefined, `\`${SearchType[searchFilters.searchType]}\\:${path}\\:${page}\``, { reply_markup: inlineButtons.reply_markup, parse_mode: "MarkdownV2" });
+    bot.telegram.editMessageText(userId, messageIdToEdit, undefined, `\`${SearchType[searchFilters.searchType]}\\:${path}\\:${page}\``, { reply_markup: inlineButtons.reply_markup, parse_mode: "MarkdownV2" })
+    .catch(err => { log.error(`Failed to edit message ${messageIdToEdit} in chat ${userId}`); console.log(err) });;
 }
