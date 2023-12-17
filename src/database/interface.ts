@@ -3,7 +3,7 @@ export interface DBUser {
     username: string,
     language_code: string,
     joined_at: Date,
-    search_settings: SearchFilters
+    search_filters: SearchFilters
 }
 
 export interface SearchFilters {
@@ -11,6 +11,10 @@ export interface SearchFilters {
     levelDifficulty: Array<Number>,
     demonFilter: number,
     levelLength: Array<Number>,
+}
+
+export interface PageSearchFilters extends SearchFilters {
+    page: number
 }
 
 export const SearchFiltersDefault: SearchFilters = { 

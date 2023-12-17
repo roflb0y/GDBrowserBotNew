@@ -1,6 +1,6 @@
 import { MUser } from "./schemas";
 import { User } from "telegraf/typings/core/types/typegram";
-import { DBUser } from "./interface";
+import { DBUser, SearchFiltersDefault } from "./interface";
 import * as log from "../util/logger";
 import { toggleArrayValue } from "../util/utils";
 
@@ -10,7 +10,7 @@ function defaultUser(user: any): DBUser {
         username: user.username,
         language_code: user.language_code,
         joined_at: user.joined_at,
-        search_settings: user.search_settings || { searchType: 0 }
+        search_filters: user.search_filters
     };
 }
 
@@ -34,21 +34,29 @@ export async function getUser(userId: number): Promise<DBUser | undefined> {
     return defaultUser(user);
 }
 
-export async function setSetting(userId: number, setting: string, value: number): Promise<DBUser | undefined> {
+export async function setFilter(userId: number, filter: string, value: number): Promise<DBUser | undefined> {
     const user = await getUser(userId);
     if (!user) return;
 
-    let newSetting;
+    let newFilter;
 
-    if (setting === "levelDifficulty" || setting === "levelLength") {
-        const settingToUpdate = user.search_settings[setting];
-        newSetting = toggleArrayValue(settingToUpdate, value, true);
+    if (filter === "levelDifficulty" || filter === "levelLength") {
+        const filterToUpdate = user.search_filters[filter];
+        newFilter = toggleArrayValue(filterToUpdate, value, true);
     } else {
-        newSetting = value;
+        newFilter = value;
     }
-    const updatedSettingsUser = await MUser.findOneAndUpdate({ user_id: userId }, { [`search_settings.${setting}`]: newSetting }, { returnDocument: "after" });
+    const updatedSettingsUser = await MUser.findOneAndUpdate({ user_id: userId }, { [`search_filters.${filter}`]: newFilter }, { returnDocument: "after" });
 
     if (!updatedSettingsUser) return undefined;
-    log.db(`${userId} updated settings - ${setting} = ${newSetting}`);
+    log.db(`${userId} updated settings - ${filter} = ${newFilter}`);
     return defaultUser(updatedSettingsUser);
+}
+
+export async function resetFilters(userId: number) {
+    const updatedFiltersUser = await MUser.findOneAndUpdate({ user_id: userId }, { "search_filters": SearchFiltersDefault }, { returnDocument: "after" });
+
+    if (!updatedFiltersUser) return undefined;
+    log.db(`${userId} reset settings to default`);
+    return defaultUser(updatedFiltersUser);
 }

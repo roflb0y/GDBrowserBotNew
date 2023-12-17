@@ -1,3 +1,3 @@
 import "./level";
 import "./pages";
-import "./searchSettings";
+import "./searchFilters";

@@ -9,3 +9,7 @@ export function toggleArrayValue<T>(arr: Array<T>, value: T, sort?: true): Array
         return arr
     }
 }
+
+export function isNumber(str: string): boolean {
+    return !isNaN(Number(str));
+}

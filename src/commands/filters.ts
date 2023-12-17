@@ -1,6 +1,6 @@
 import { bot } from "../bot";
 import * as db from "../database/database";
-import { settingsKeyboard } from "../markups/searchFilters";
+import { filtersKeyboard } from "../markups/searchFilters";
 import * as log from "../util/logger";
 
 log.info("/filters command initialized");
@@ -13,7 +13,7 @@ bot.command("filters", async ctx => {
             return;
         }
 
-        const keyboard = settingsKeyboard(user.search_settings);
+        const keyboard = filtersKeyboard(user.search_filters);
         ctx.reply("Search filters", keyboard);
     })
 })

@@ -9,21 +9,21 @@ const gd = new GD({
 });
 
 // еее свой реквест потому что в gd.js нельзя искать уровни на конкретной странице блять это пиздец
-export async function searchLevels(query: string, page: number, searchSettings: SearchFilters): Promise<GDLevelData[] | undefined> {
+export async function searchLevels(query: string, page: number, searchFilters: SearchFilters): Promise<GDLevelData[] | undefined> {
     const params = new GDRequestParams({ 
         gameVersion: 21, 
         binaryVersion: 35, 
-        type: searchSettings.searchType,
+        type: searchFilters.searchType,
         gdw: 0, 
         str: query, 
         page: page, 
-        demonFilter: searchSettings.demonFilter,
-        diff: searchSettings.levelDifficulty.length > 0 ? searchSettings.levelDifficulty.join(",") : "-",
-        len: searchSettings.levelLength.length > 0 ? searchSettings.levelLength.join(",") : "-",
+        demonFilter: searchFilters.demonFilter,
+        diff: searchFilters.levelDifficulty.length > 0 ? searchFilters.levelDifficulty.join(",") : "-",
+        len: searchFilters.levelLength.length > 0 ? searchFilters.levelLength.join(",") : "-",
         secret: "Wmfd2893gb7"
     });
 
-    log.debug(`Request to GD servers with parameters ${JSON.stringify(params)}`)
+    log.debug(`Searching levels with parameters ${JSON.stringify(params)}`)
     const data = await gd.req("/getGJLevels21.php", { 
         method: "POST", 
         body: params
@@ -40,10 +40,10 @@ export async function searchLevels(query: string, page: number, searchSettings: 
 }
 
 export async function getLevel(id: number): Promise<{"level": SearchedLevel | null, "creator": User | null}> {
+    log.debug(`Fetching level ${id}`);
     const level = await gd.levels.get(id, true);
     if (level === null) return { "level": null, "creator": null };
 
     const creator = level.creator.accountID ? await gd.users.getByAccountID(level.creator.accountID) : null;
-    console.log(level);
     return { "level": level, "creator": creator }
 }

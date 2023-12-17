@@ -3,6 +3,8 @@ import { bot } from "../bot";
 import { sendPage } from "../commands/search";
 import * as log from "../util/logger";
 import { getUser } from "../database/database";
+import { Message } from "telegraf/typings/core/types/typegram";
+import { parseSearchFilters } from "../gd/parser";
 
 log.info("pages.ts handler initialized");
 
@@ -14,13 +16,11 @@ bot.action(/page_/, async ctx => {
     .then(async user => {
         if (!user) return;
         if (!ctx.callbackQuery.message) return;
+        const dumpedFilters = (ctx.callbackQuery.message as Message.TextMessage).text;
+        const filters = parseSearchFilters(dumpedFilters);
+
         const [adfsafsdgfds, searchType, newpage] = ctx.callbackQuery.data.split("_");
 
-        sendPage(user.user_id, {
-            searchType: Number(searchType),
-            levelDifficulty: [],
-            demonFilter: 0,
-            levelLength: []
-        }, ctx.callbackQuery.message.message_id, Number(newpage));
+        sendPage(user.user_id, filters, ctx.callbackQuery.message.message_id, Number(newpage));
     })
 })

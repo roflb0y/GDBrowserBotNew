@@ -1,4 +1,6 @@
-import { GDLevelData, DifficultyColor } from "./interface";
+import { PageSearchFilters, SearchFilters, SearchFiltersDefault } from "../database/interface";
+import { isNumber } from "../util/utils";
+import { GDLevelData, DifficultyColor, SearchType } from "./interface";
 
 function getDifficultyColor(diffDenominator: number, diffNumerator: number, isAuto: boolean, isDemon: boolean): string {
     if (diffDenominator === 0) { return DifficultyColor.na };
@@ -57,5 +59,46 @@ export function parseLevels(levels: string, creators: string, splitter: string =
         });
     })
     
+    return res;
+}
+
+export function dumpSearchFilters(searchFilters: SearchFilters): string {
+    let params: string[] = [];
+    console.log(searchFilters);
+
+    //params.push(`type=${searchFilters.searchType}`);
+    if (searchFilters.levelDifficulty[0] === -2) params.push(`demonFilter=${searchFilters.demonFilter}`);
+    if (searchFilters.levelDifficulty[0] !== -2) params.push(`diff=${searchFilters.levelDifficulty.length > 0 ? searchFilters.levelDifficulty.join(",") : "-"}`);
+    params.push(`len=${searchFilters.levelLength.length > 0 ? searchFilters.levelLength.join(",") : "-"}`);
+    return params.join(";");
+}
+
+export function parseSearchFilters(data: string): SearchFilters {
+    let res: SearchFilters = { ...SearchFiltersDefault };
+
+    const [searchType, dumpedFilters, page] = data.split(":");
+    res.searchType = Number(SearchType[searchType as keyof typeof SearchType]);
+
+    let filters: { [key: string]: number | number[] | undefined } = {};
+    dumpedFilters.split(";").forEach(filter => {
+        const [filterName, value] = filter.split("=");
+        if (value === "-") {
+            filters[filterName] = undefined;
+        }
+        else if (filterName === "diff" || filterName === "len") {
+            filters[filterName] = value.split(",").map(val => Number(val));
+        } else {
+            filters[filterName] = Number(value);
+        }
+        
+    })
+
+    if (!filters.diff) filters.diff = [-2];
+
+    console.log("parsed filters " + JSON.stringify(filters));
+    if(filters.diff) res.levelDifficulty = filters.diff as Number[];
+    if(filters.demonFilter) res.demonFilter = Number(filters.demonFilter);
+    if(filters.len) res.levelLength = filters.len as Number[];
+
     return res;
 }

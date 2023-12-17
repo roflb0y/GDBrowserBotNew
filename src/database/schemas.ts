@@ -22,7 +22,7 @@ const users = new mongoose.Schema({
         default: () => new Date().setHours(new Date().getHours() + 3)
     },
 
-    search_settings: {
+    search_filters: {
         searchType: { type: Number, default: SearchFiltersDefault.searchType },
         levelDifficulty: { type: Array<Number>, default: SearchFiltersDefault.levelDifficulty },
         demonFilter: { type: Number, default: SearchFiltersDefault.demonFilter },
