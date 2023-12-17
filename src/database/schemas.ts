@@ -19,6 +19,10 @@ const users = new mongoose.Schema({
     joined_at: {
         type: Date,
         default: () => new Date().setHours(new Date().getHours() + 3)
+    },
+
+    search_settings: {
+        searchType: { type: Number, default: 0 }
     }
 })
 
