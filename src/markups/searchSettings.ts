@@ -12,7 +12,7 @@ export const settingsKeyboard = (searchSettings: SearchSettings) => {
 
             // row 2
             [Markup.button.callback(`${searchSettings.searchType === 4 ? "✅" : ""} Recent 🕑`, `set_searchType_4`),
-            Markup.button.callback(`${searchSettings.searchType === 5 ? "✅" : ""} Featured ⭐`, `set_searchType_5`),
+            Markup.button.callback(`${searchSettings.searchType === 6 ? "✅" : ""} Featured ⭐`, `set_searchType_6`),
             Markup.button.callback(`${searchSettings.searchType === 7 ? "✅" : ""} Magic ✨`, `set_searchType_7`)
         ]
     ])

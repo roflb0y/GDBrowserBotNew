@@ -10,6 +10,7 @@ export enum SearchType {
     MostLiked = 2,
     Trending = 3,
     Recent = 4,
+    Featured = 6,
     Magic = 7,
     Awarded = 11
 }
