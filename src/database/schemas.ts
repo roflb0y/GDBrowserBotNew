@@ -22,7 +22,7 @@ const users = new mongoose.Schema({
     },
 
     search_settings: {
-        searchType: { type: Number, default: 0 }
+        searchType: { type: Number, default: 2 }
     }
 })
 

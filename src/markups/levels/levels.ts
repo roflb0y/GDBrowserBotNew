@@ -10,7 +10,7 @@ export function levelsMarkupBuilder(levels: GDLevelData[], page: number, searchT
     }
 
     levelsButtons.push([
-        Markup.button.callback(page === 0 ? " " : "←", `page_${searchType}_${page - 1}`),
+        Markup.button.callback(page === 0 ? " " : "←", page === 0 ? "none" : `page_${searchType}_${page - 1}`),
         Markup.button.callback((page + 1).toString(), "none"),
         Markup.button.callback("→", `page_${searchType}_${page + 1}`)
     ])

@@ -1,6 +1,9 @@
 import { bot } from "../bot";
 import * as db from "../database/database";
 import { settingsKeyboard } from "../markups/searchSettings";
+import * as log from "../util/logger";
+
+log.info("/settings command initialized");
 
 bot.command("settings", async ctx => {
     db.getUser(ctx.from.id)

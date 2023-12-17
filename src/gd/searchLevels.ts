@@ -1,6 +1,7 @@
 import GD, { GDRequestParams, SearchedLevel, User } from "gd.js";
 import * as parser from "./parser";
 import { GDLevelData, SearchType } from "./interface";
+import * as log from "../util/logger";
 
 const gd = new GD({
     logLevel: 1

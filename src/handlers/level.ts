@@ -1,6 +1,9 @@
 import { bot } from "../bot";
 import { callbackQuery } from "telegraf/filters";
 import { getLevel } from "../gd/searchLevels";
+import * as log from "../util/logger";
+
+log.info("level.ts handler initialized");
 
 bot.action(/level_/, async ctx => {
     if (!ctx.has(callbackQuery("data"))) return;

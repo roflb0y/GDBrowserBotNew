@@ -3,7 +3,9 @@ import { getUser } from "../database/database";
 import { callbackQuery } from "telegraf/filters";
 import { setSetting } from "../database/database";
 import { settingsKeyboard } from "../markups/searchSettings";
-import { SearchSettings } from "../database/interface";
+import * as log from "../util/logger";
+
+log.info("searchSettings.ts handler initialized");
 
 bot.action(/set_/, async ctx => {
     if (!ctx.has(callbackQuery("data"))) return;
@@ -27,6 +29,7 @@ bot.action(/set_/, async ctx => {
         }
     
         const keyboard = settingsKeyboard(updatedUser.search_settings);
-        ctx.editMessageReplyMarkup(keyboard.reply_markup);
+        ctx.editMessageReplyMarkup(keyboard.reply_markup)
+        .catch(() => {});
     })
 })

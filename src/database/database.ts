@@ -18,7 +18,7 @@ export async function addUser(tguser: User): Promise<DBUser | undefined> {
 
     if (user) return user;
     const res = await new MUser({user_id: tguser.id, username: tguser.username, language_code: tguser.language_code}).save();
-    log.info(`Inserted new user ${tguser.id}`);
+    log.db(`Inserted new user ${tguser.id}`);
 
     if (!res) return undefined;
     console.log(res);
@@ -37,5 +37,6 @@ export async function setSetting(userId: number, setting: string, value: number)
     const user = await MUser.findOneAndUpdate({ user_id: userId }, { [`search_settings.${setting}`]: value }, { returnDocument: "after" });
 
     if (!user) return undefined;
+    log.db(`${userId} updated settings - ${setting} = ${value}`)
     return defaultUser(user);
 }

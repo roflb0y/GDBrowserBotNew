@@ -11,3 +11,7 @@ export const debug = (msg: any) => {
 export const error = (msg: any) => {
     console.log(chalk.redBright(`[${new Date().toLocaleString()}] ERROR: ${msg}`))
 }
+
+export const db = (msg: any) => {
+    console.log(chalk.yellow(`[${new Date().toLocaleString()}] DATABASE OPERATION: ${msg}`))
+}
