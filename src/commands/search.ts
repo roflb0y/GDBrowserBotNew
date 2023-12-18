@@ -4,8 +4,8 @@ import { levelsMarkupBuilder } from "../markups/levels/levels";
 import { SearchType } from "../gd/interface";
 import { getUser } from "../database/database";
 import * as log from "../util/logger";
-import { SearchFilters } from "../database/interface";
-import { dumpSearchFilters } from "../gd/parser";
+import { QuerySearchFilters, SearchFilters } from "../database/interface";
+import * as utils from "../util/utils";
 
 log.info("/search command initialized");
 
@@ -15,21 +15,25 @@ bot.command("search", async ctx => {
         ctx.reply("Произошла ошибка. Пропишите /start");
         return;
     }
+
+    const searchQuery = ctx.message.text.split(" ").slice(1).join(" ");
+    let searchFilters: QuerySearchFilters = { ...user.search_filters, str: searchQuery };
+
     ctx.reply(`Loading...`)
-    .then(msg => sendPage(ctx.from.id, user.search_filters, msg.message_id, 0));
+    .then(msg => sendPage(ctx.from.id, searchFilters, msg.message_id, 0));
 });
 
-export async function sendPage(userId: number, searchFilters: SearchFilters, messageIdToEdit: number, page: number): Promise<void> {
-    log.info(`${userId} searching type ${SearchType[searchFilters.type]} on page ${page}`);
-    const levels = await searchLevels("", page, searchFilters);
+export async function sendPage(userId: number, searchFilters: QuerySearchFilters, messageIdToEdit: number, page: number): Promise<void> {
+    log.info(`${userId} searching with type ${SearchType[searchFilters.type]} on page ${page}`);
+    const levels = await searchLevels(page, searchFilters);
     if (!levels) {
         await bot.telegram.editMessageText(userId, messageIdToEdit, undefined, `Error. Server returned -1`);
         return;
     }
     const inlineButtons = levelsMarkupBuilder(levels, page, searchFilters.type);
-    const path = dumpSearchFilters(searchFilters);
+    const path = utils.createPath(searchFilters, page);
     //console.log(path);
 
-    bot.telegram.editMessageText(userId, messageIdToEdit, undefined, `\`${SearchType[searchFilters.type]}\\:${path}\\:${page}\``, { reply_markup: inlineButtons.reply_markup, parse_mode: "MarkdownV2" })
+    bot.telegram.editMessageText(userId, messageIdToEdit, undefined, `\`${utils.prepareString(path)}\``, { reply_markup: inlineButtons.reply_markup, parse_mode: "MarkdownV2" })
     .catch(err => { log.error(`Failed to edit message ${messageIdToEdit} in chat ${userId}`); console.log(err) });
 }

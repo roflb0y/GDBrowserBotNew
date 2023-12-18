@@ -1,4 +1,4 @@
-import { SearchFilters, SearchFiltersDefault } from "../database/interface";
+import { QuerySearchFilters, SearchFilters, SearchFiltersDefault } from "../database/interface";
 import { GDLevelData, DifficultyColor, SearchType } from "./interface";
 
 function getDifficultyColor(diffDenominator: number, diffNumerator: number, isAuto: boolean, isDemon: boolean): string {
@@ -61,19 +61,21 @@ export function parseLevels(levels: string, creators: string, splitter: string =
     return res;
 }
 
-export function dumpSearchFilters(searchFilters: SearchFilters): string {
+export function dumpSearchFilters(searchFilters: QuerySearchFilters): string {
     let params: string[] = [];
 
     //params.push(`type=${searchFilters.searchType}`);
     if (searchFilters.diff[0] === -2) params.push(`demonFilter=${searchFilters.demonFilter}`);
     if (searchFilters.diff[0] !== -2) params.push(`diff=${searchFilters.diff.length > 0 ? searchFilters.diff.join(",") : "-"}`);
-    params.push(`len=${searchFilters.diff.length > 0 ? searchFilters.diff.join(",") : "-"}`);
+    params.push(`len=${searchFilters.diff.length > 0 ? searchFilters.len.join(",") : "-"}`);
+    params.push(`str=${searchFilters.str || ""}`)
     return params.join(";");
 }
 
-export function parseSearchFilters(data: string): SearchFilters | string {
+// это самая худшая функция которую я написал за свою жизнь
+export function parseSearchFilters(data: string): QuerySearchFilters | string {
     let errors: string[] = [];
-    let res: SearchFilters = { ...SearchFiltersDefault };
+    let res: QuerySearchFilters = { ...SearchFiltersDefault, str: "" };
 
     const [searchType, dumpedFilters, page] = data.split(":");
     res.type = Number(SearchType[searchType as keyof typeof SearchType]);
@@ -81,29 +83,35 @@ export function parseSearchFilters(data: string): SearchFilters | string {
         return `${searchType} is not a valid search type`;
     }
 
-    let filters: { [key: string]: number | number[] | undefined } = {};
+    let filters: { [key: string]: number | number[] | string | undefined } = {};
     dumpedFilters.split(";").forEach(filter => {
         const [filterName, value] = filter.split("=");
-        if (!(res as any)[filterName]) { errors.push(`${filterName} is not a valid filter`) }
+        if (!res[filterName as keyof QuerySearchFilters] && res[filterName as keyof QuerySearchFilters] !== "") { errors.push(`${filterName} is not a valid filter`) }
 
         if (value === "-") {
             filters[filterName] = undefined;
         }
         else if (filterName === "diff" || filterName === "len") {
             filters[filterName] = value.split(",").map(val => Number(val));
-        } else {
+        } 
+        else if (filterName === "str") {
+            console.log(filter);
+            filters[filterName] = value || "";
+        }
+        else {
             filters[filterName] = Number(value);
         }
         
     })
 
-    if(errors.length > 0) return errors.join("; ")
+    if(errors.length > 0) return errors.join("; ");
 
     if(!filters.diff && filters.demonFilter) filters.diff = [-2];
 
     if(filters.diff) res.diff = filters.diff as Number[];
     if(filters.demonFilter) res.demonFilter = Number(filters.demonFilter);
     if(filters.len) res.len = filters.len as Number[];
+    if(filters.str) res.str = filters.str as string;    
 
     return res;
 }

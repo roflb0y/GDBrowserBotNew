@@ -2,20 +2,28 @@ import GD, { GDRequestParams, SearchedLevel, User } from "gd.js";
 import * as parser from "./parser";
 import { GDLevelData, SearchType } from "./interface";
 import * as log from "../util/logger";
-import { SearchFilters } from "../database/interface";
+import { QuerySearchFilters, SearchFilters } from "../database/interface";
+import * as cache from "../util/cache";
+import * as utils from "../util/utils";
 
 const gd = new GD({
     logLevel: 1
 });
 
 // еее свой реквест потому что в gd.js нельзя искать уровни на конкретной странице блять это пиздец
-export async function searchLevels(query: string, page: number, searchFilters: SearchFilters): Promise<GDLevelData[] | undefined> {
+export async function searchLevels(page: number, searchFilters: QuerySearchFilters): Promise<GDLevelData[] | undefined> {
+    const cachedSearchResult = cache.getSearchCache(utils.createPath(searchFilters, page));
+    if (cachedSearchResult) {
+        log.debug(`Returning cached result for ${JSON.stringify(searchFilters)}`);
+        return cachedSearchResult;
+    }
+
     const params = new GDRequestParams({ 
         gameVersion: 21, 
         binaryVersion: 35, 
-        type: searchFilters.type,
+        type: searchFilters.str ? 0 : searchFilters.type,
         gdw: 0, 
-        str: query, 
+        str: searchFilters.str && searchFilters.str !== "" ? searchFilters.str : "", 
         page: page, 
         demonFilter: searchFilters.demonFilter,
         diff: searchFilters.diff.length > 0 ? searchFilters.diff.join(",") : "-",
@@ -35,6 +43,8 @@ export async function searchLevels(query: string, page: number, searchFilters: S
     
     const [levels, creators, songs] = data.split("#");
     const levels_parsed = parser.parseLevels(levels, creators);
+
+    cache.updateSearchCache(utils.createPath(searchFilters, page), levels_parsed);
     //console.log(data);
     return levels_parsed;
 }

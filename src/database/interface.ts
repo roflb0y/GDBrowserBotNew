@@ -13,6 +13,11 @@ export interface SearchFilters {
     len: Array<Number>,
 }
 
+export interface QuerySearchFilters extends SearchFilters {
+    /** query for searching */
+    str?: string
+}
+
 export const SearchFiltersDefault: SearchFilters = { 
     type: 2,
     diff: [],
