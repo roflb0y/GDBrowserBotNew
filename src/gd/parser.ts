@@ -65,21 +65,27 @@ export function dumpSearchFilters(searchFilters: SearchFilters): string {
     let params: string[] = [];
 
     //params.push(`type=${searchFilters.searchType}`);
-    if (searchFilters.levelDifficulty[0] === -2) params.push(`demonFilter=${searchFilters.demonFilter}`);
-    if (searchFilters.levelDifficulty[0] !== -2) params.push(`diff=${searchFilters.levelDifficulty.length > 0 ? searchFilters.levelDifficulty.join(",") : "-"}`);
-    params.push(`len=${searchFilters.levelLength.length > 0 ? searchFilters.levelLength.join(",") : "-"}`);
+    if (searchFilters.diff[0] === -2) params.push(`demonFilter=${searchFilters.demonFilter}`);
+    if (searchFilters.diff[0] !== -2) params.push(`diff=${searchFilters.diff.length > 0 ? searchFilters.diff.join(",") : "-"}`);
+    params.push(`len=${searchFilters.diff.length > 0 ? searchFilters.diff.join(",") : "-"}`);
     return params.join(";");
 }
 
-export function parseSearchFilters(data: string): SearchFilters {
+export function parseSearchFilters(data: string): SearchFilters | string {
+    let errors: string[] = [];
     let res: SearchFilters = { ...SearchFiltersDefault };
 
     const [searchType, dumpedFilters, page] = data.split(":");
-    res.searchType = Number(SearchType[searchType as keyof typeof SearchType]);
+    res.type = Number(SearchType[searchType as keyof typeof SearchType]);
+    if (Number.isNaN(Number(SearchType[searchType as keyof typeof SearchType]))) {
+        return `${searchType} is not a valid search type`;
+    }
 
     let filters: { [key: string]: number | number[] | undefined } = {};
     dumpedFilters.split(";").forEach(filter => {
         const [filterName, value] = filter.split("=");
+        if (!(res as any)[filterName]) { errors.push(`${filterName} is not a valid filter`) }
+
         if (value === "-") {
             filters[filterName] = undefined;
         }
@@ -91,11 +97,13 @@ export function parseSearchFilters(data: string): SearchFilters {
         
     })
 
-    if (!filters.diff && filters.demonFilter) filters.diff = [-2];
+    if(errors.length > 0) return errors.join("; ")
 
-    if(filters.diff) res.levelDifficulty = filters.diff as Number[];
+    if(!filters.diff && filters.demonFilter) filters.diff = [-2];
+
+    if(filters.diff) res.diff = filters.diff as Number[];
     if(filters.demonFilter) res.demonFilter = Number(filters.demonFilter);
-    if(filters.len) res.levelLength = filters.len as Number[];
+    if(filters.len) res.len = filters.len as Number[];
 
     return res;
 }

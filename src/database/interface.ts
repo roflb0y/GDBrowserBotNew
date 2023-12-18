@@ -7,15 +7,15 @@ export interface DBUser {
 }
 
 export interface SearchFilters {
-    searchType: number,
-    levelDifficulty: Array<Number>,
+    type: number,
+    diff: Array<Number>,
     demonFilter: number,
-    levelLength: Array<Number>,
+    len: Array<Number>,
 }
 
 export const SearchFiltersDefault: SearchFilters = { 
-    searchType: 2,
-    levelDifficulty: [],
+    type: 2,
+    diff: [],
     demonFilter: 3,
-    levelLength: []
+    len: []
 }

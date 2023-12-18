@@ -20,16 +20,16 @@ bot.command("search", async ctx => {
 });
 
 export async function sendPage(userId: number, searchFilters: SearchFilters, messageIdToEdit: number, page: number): Promise<void> {
-    log.info(`${userId} searching type ${SearchType[searchFilters.searchType]} on page ${page}`);
+    log.info(`${userId} searching type ${SearchType[searchFilters.type]} on page ${page}`);
     const levels = await searchLevels("", page, searchFilters);
     if (!levels) {
         await bot.telegram.editMessageText(userId, messageIdToEdit, undefined, `Error. Server returned -1`);
         return;
     }
-    const inlineButtons = levelsMarkupBuilder(levels, page, searchFilters.searchType);
+    const inlineButtons = levelsMarkupBuilder(levels, page, searchFilters.type);
     const path = dumpSearchFilters(searchFilters);
     //console.log(path);
 
-    bot.telegram.editMessageText(userId, messageIdToEdit, undefined, `\`${SearchType[searchFilters.searchType]}\\:${path}\\:${page}\``, { reply_markup: inlineButtons.reply_markup, parse_mode: "MarkdownV2" })
-    .catch(err => { log.error(`Failed to edit message ${messageIdToEdit} in chat ${userId}`); console.log(err) });;
+    bot.telegram.editMessageText(userId, messageIdToEdit, undefined, `\`${SearchType[searchFilters.type]}\\:${path}\\:${page}\``, { reply_markup: inlineButtons.reply_markup, parse_mode: "MarkdownV2" })
+    .catch(err => { log.error(`Failed to edit message ${messageIdToEdit} in chat ${userId}`); console.log(err) });
 }

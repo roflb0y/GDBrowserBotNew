@@ -13,13 +13,13 @@ export async function searchLevels(query: string, page: number, searchFilters: S
     const params = new GDRequestParams({ 
         gameVersion: 21, 
         binaryVersion: 35, 
-        type: searchFilters.searchType,
+        type: searchFilters.type,
         gdw: 0, 
         str: query, 
         page: page, 
         demonFilter: searchFilters.demonFilter,
-        diff: searchFilters.levelDifficulty.length > 0 ? searchFilters.levelDifficulty.join(",") : "-",
-        len: searchFilters.levelLength.length > 0 ? searchFilters.levelLength.join(",") : "-",
+        diff: searchFilters.diff.length > 0 ? searchFilters.diff.join(",") : "-",
+        len: searchFilters.len.length > 0 ? searchFilters.len.join(",") : "-",
         secret: "Wmfd2893gb7"
     });
 

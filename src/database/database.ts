@@ -40,7 +40,7 @@ export async function setFilter(userId: number, filter: string, value: number): 
 
     let newFilter;
 
-    if (filter === "levelDifficulty" || filter === "levelLength") {
+    if (filter === "diff" || filter === "len") {
         const filterToUpdate = user.search_filters[filter];
         newFilter = toggleArrayValue(filterToUpdate, value, true);
         if (newFilter.includes(-2)) newFilter = [newFilter[0]];

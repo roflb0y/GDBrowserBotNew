@@ -5,6 +5,8 @@ import * as log from "../util/logger";
 import { getUser } from "../database/database";
 import { Message } from "telegraf/typings/core/types/typegram";
 import { parseSearchFilters } from "../gd/parser";
+import { SearchFilters } from "../database/interface";
+import { isSearchFilters } from "../util/utils";
 
 log.info("pages.ts handler initialized");
 
@@ -18,6 +20,8 @@ bot.action(/page_/, async ctx => {
         if (!ctx.callbackQuery.message) return;
         const dumpedFilters = (ctx.callbackQuery.message as Message.TextMessage).text;
         const filters = parseSearchFilters(dumpedFilters);
+
+        if (!isSearchFilters(filters)) return;
 
         const [adfsafsdgfds, searchType, newpage] = ctx.callbackQuery.data.split("_");
 

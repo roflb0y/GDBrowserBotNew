@@ -23,10 +23,10 @@ const users = new mongoose.Schema({
     },
 
     search_filters: {
-        searchType: { type: Number, default: SearchFiltersDefault.searchType },
-        levelDifficulty: { type: Array<Number>, default: SearchFiltersDefault.levelDifficulty },
+        type: { type: Number, default: SearchFiltersDefault.type },
+        diff: { type: Array<Number>, default: SearchFiltersDefault.diff },
         demonFilter: { type: Number, default: SearchFiltersDefault.demonFilter },
-        levelLength: { type: Array<Number>, default: SearchFiltersDefault.levelLength }
+        len: { type: Array<Number>, default: SearchFiltersDefault.len }
     }
 })
 
