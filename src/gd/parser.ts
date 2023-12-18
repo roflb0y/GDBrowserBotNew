@@ -1,5 +1,4 @@
-import { PageSearchFilters, SearchFilters, SearchFiltersDefault } from "../database/interface";
-import { isNumber } from "../util/utils";
+import { SearchFilters, SearchFiltersDefault } from "../database/interface";
 import { GDLevelData, DifficultyColor, SearchType } from "./interface";
 
 function getDifficultyColor(diffDenominator: number, diffNumerator: number, isAuto: boolean, isDemon: boolean): string {

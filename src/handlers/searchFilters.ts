@@ -30,7 +30,13 @@ bot.action(/set_/, async ctx => {
     
         const keyboard = filtersKeyboard(updatedUser.search_filters);
         ctx.editMessageReplyMarkup(keyboard.reply_markup)
-        .then(() => ctx.answerCbQuery())
+        .then(() => {
+            if (filter === "searchType" && value === "6") {
+                ctx.answerCbQuery("When searching for featured levels all other filter will be ignored");
+            } else {
+                ctx.answerCbQuery();
+            }
+        })
         .catch(() => {});
     })
 });

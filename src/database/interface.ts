@@ -13,10 +13,6 @@ export interface SearchFilters {
     levelLength: Array<Number>,
 }
 
-export interface PageSearchFilters extends SearchFilters {
-    page: number
-}
-
 export const SearchFiltersDefault: SearchFilters = { 
     searchType: 2,
     levelDifficulty: [],
