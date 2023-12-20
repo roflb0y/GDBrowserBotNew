@@ -15,7 +15,8 @@
     "chalk": "^4.1.2",
     "gd.js": "^0.2.13",
     "mongoose": "^8.0.3",
-    "telegraf": "^4.15.3"
+    "telegraf": "^4.15.3",
+    "youtube-search-without-api-key": "^1.0.7"
   },
   "devDependencies": {
     "@types/node": "^20.10.4",

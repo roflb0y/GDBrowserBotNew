@@ -1,3 +1,4 @@
+import { fstat } from "fs";
 import { QuerySearchFilters, SearchFilters } from "../database/interface";
 import { SearchType } from "../gd/interface";
 import { dumpSearchFilters } from "../gd/parser";

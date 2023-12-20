@@ -95,7 +95,6 @@ export function parseSearchFilters(data: string): QuerySearchFilters | string {
             filters[filterName] = value.split(",").map(val => Number(val));
         } 
         else if (filterName === "str") {
-            console.log(filter);
             filters[filterName] = value || "";
         }
         else {

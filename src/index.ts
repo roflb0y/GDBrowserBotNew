@@ -7,6 +7,7 @@ log.info("Launching the bot...");
 
 import "./commands/init";
 import "./handlers/init";
+import "./admin/videoSetHandler";
 
 (async () => {
     log.info("Connecting to db...");
